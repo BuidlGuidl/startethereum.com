@@ -4,9 +4,11 @@ import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAccount } from "wagmi";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
+import { useGlobalState } from "~~/services/store/store";
 
 type HeaderMenuLink = {
   label: string;
@@ -14,15 +16,21 @@ type HeaderMenuLink = {
   icon?: React.ReactNode;
 };
 
-export const menuLinks: HeaderMenuLink[] = [
-  {
-    label: "Home",
-    href: "/",
-  },
-];
-
 export const HeaderMenuLinks = () => {
   const pathname = usePathname();
+  const { address } = useAccount();
+  const isUserRegistered = useGlobalState(state => state.isUserRegistered);
+
+  const menuLinks: HeaderMenuLink[] = [
+    ...(isUserRegistered && address
+      ? [
+          {
+            label: "Your Profile",
+            href: `/user/${address}`,
+          },
+        ]
+      : []),
+  ];
 
   return (
     <>
