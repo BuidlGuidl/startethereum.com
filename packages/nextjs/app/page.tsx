@@ -6,12 +6,14 @@ import type { NextPage } from "next";
 import { useAccount, useSignTypedData } from "wagmi";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import { Address, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
+import { useGlobalState } from "~~/services/store/store";
 import { EIP_712_DOMAIN, EIP_712_TYPES__REGISTER } from "~~/utils/eip712";
 
 const Home: NextPage = () => {
   const { isConnected, address } = useAccount();
-  const [hasWalletInstalled, setHasWalletInstalled] = useState(false);
-  const [hasSignedMessage, setHasSignedMessage] = useState(false);
+  const isUserRegistered = useGlobalState(state => state.isUserRegistered);
+  const setIsUserRegistered = useGlobalState(state => state.setIsUserRegistered);
+  const [hasWalletInstalled, setHasWalletInstalled] = useState(isUserRegistered || false);
 
   const { signTypedDataAsync, isPending: isSigningMessage } = useSignTypedData();
 
@@ -37,7 +39,7 @@ const Home: NextPage = () => {
       });
 
       if (response.ok) {
-        setHasSignedMessage(true);
+        setIsUserRegistered(true);
       } else {
         console.error("Failed to register");
       }
@@ -63,7 +65,7 @@ const Home: NextPage = () => {
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-bold">1. Get your wallet!</h2>
-                {hasWalletInstalled && <CheckCircleIcon className="text-green-500 h-5 w-5" />}
+                {(hasWalletInstalled || isUserRegistered) && <CheckCircleIcon className="text-green-500 h-5 w-5" />}
               </div>
               <p className="text-gray-600">Download Rainbow wallet to start your Web3 journey</p>
               <a
@@ -88,10 +90,10 @@ const Home: NextPage = () => {
               </div>
             </div>
 
-            <div className={`flex flex-col gap-2 ${!hasWalletInstalled ? "opacity-50" : ""}`}>
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-bold">2. Connect your wallet</h2>
-                {isConnected && <CheckCircleIcon className="text-green-500 h-5 w-5" />}
+                {(isConnected || isUserRegistered) && <CheckCircleIcon className="text-green-500 h-5 w-5" />}
               </div>
               {!isConnected && <p className="text-gray-600">Connect your wallet to this website</p>}
               <div className="w-fit">
@@ -99,12 +101,12 @@ const Home: NextPage = () => {
               </div>
             </div>
 
-            <div className={`flex flex-col gap-2 ${!isConnected ? "opacity-50" : ""}`}>
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-bold">3. Sign your first message</h2>
-                {hasSignedMessage && <CheckCircleIcon className="text-green-500 h-5 w-5" />}
+                {isUserRegistered && <CheckCircleIcon className="text-green-500 h-5 w-5" />}
               </div>
-              {!hasSignedMessage ? (
+              {!isUserRegistered ? (
                 <>
                   <p className="text-gray-600">Try out a simple off-chain signature - no gas fees!</p>
                   <button
