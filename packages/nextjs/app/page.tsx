@@ -120,7 +120,7 @@ const Home: NextPage = () => {
                   <p className="text-gray-600">
                     You have signed the message successfully! Go to your profile to continue your journey:
                   </p>
-                  <Link href={`/profile/${address}`}>
+                  <Link href={`/user/${address}`}>
                     <button className="btn btn-primary btn-sm w-fit">Go to Profile</button>
                   </Link>
                 </>

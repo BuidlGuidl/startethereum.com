@@ -1,9 +1,10 @@
-import { InferInsertModel } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { eq } from "drizzle-orm";
 import { db } from "~~/services/database/config/postgresClient";
 import { users } from "~~/services/database/config/schema";
 
 export type UserInsert = InferInsertModel<typeof users>;
+export type User = InferSelectModel<typeof users>;
 
 export async function findUserByAddress(address: string) {
   return await db.select().from(users).where(eq(users.id, address));
