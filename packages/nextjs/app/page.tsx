@@ -1,15 +1,50 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { NextPage } from "next";
-import { useAccount } from "wagmi";
+import { useAccount, useSignTypedData } from "wagmi";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import { Address, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
+import { EIP_712_DOMAIN, EIP_712_TYPES__REGISTER } from "~~/utils/eip712";
 
 const Home: NextPage = () => {
   const { isConnected, address } = useAccount();
   const [hasWalletInstalled, setHasWalletInstalled] = useState(false);
   const [hasSignedMessage, setHasSignedMessage] = useState(false);
+
+  const { signTypedDataAsync, isPending: isSigningMessage } = useSignTypedData();
+
+  const handleSignMessage = async () => {
+    try {
+      const signature = await signTypedDataAsync({
+        domain: EIP_712_DOMAIN,
+        types: EIP_712_TYPES__REGISTER,
+        primaryType: "Message",
+        message: {
+          action: "Register",
+          description: "I want to register my account into Start Ethereum signing this offchain message",
+        },
+      });
+
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          signerAddress: address,
+          signature,
+        }),
+      });
+
+      if (response.ok) {
+        setHasSignedMessage(true);
+      } else {
+        console.error("Failed to register");
+      }
+    } catch (error) {
+      console.error("Error signing message:", error);
+    }
+  };
 
   return (
     <>
@@ -69,14 +104,27 @@ const Home: NextPage = () => {
                 <h2 className="text-2xl font-bold">3. Sign your first message</h2>
                 {hasSignedMessage && <CheckCircleIcon className="text-green-500 h-5 w-5" />}
               </div>
-              <p className="text-gray-600">Try out a simple off-chain signature - no gas fees!</p>
-              <button
-                className="btn btn-primary btn-sm w-fit"
-                disabled={!isConnected}
-                onClick={() => setHasSignedMessage(true)}
-              >
-                Sign Message
-              </button>
+              {!hasSignedMessage ? (
+                <>
+                  <p className="text-gray-600">Try out a simple off-chain signature - no gas fees!</p>
+                  <button
+                    className="btn btn-primary btn-sm w-fit"
+                    disabled={!isConnected || isSigningMessage}
+                    onClick={handleSignMessage}
+                  >
+                    {isSigningMessage ? <span className="loading loading-spinner"></span> : "Sign Message"}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p className="text-gray-600">
+                    You have signed the message successfully! Go to your profile to continue your journey:
+                  </p>
+                  <Link href={`/profile/${address}`}>
+                    <button className="btn btn-primary btn-sm w-fit">Go to Profile</button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
