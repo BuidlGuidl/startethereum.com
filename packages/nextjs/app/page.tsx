@@ -90,7 +90,7 @@ const Home: NextPage = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className={`flex flex-col gap-2 ${!hasWalletInstalled ? "opacity-50" : ""}`}>
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-bold">2. Connect your wallet</h2>
                 {(isConnected || isUserRegistered) && <CheckCircleIcon className="text-green-500 h-5 w-5" />}
@@ -101,7 +101,7 @@ const Home: NextPage = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className={`flex flex-col gap-2 ${!isConnected ? "opacity-50" : ""}`}>
               <div className="flex items-center gap-2">
                 <h2 className="text-2xl font-bold">3. Sign your first message</h2>
                 {isUserRegistered && <CheckCircleIcon className="text-green-500 h-5 w-5" />}
