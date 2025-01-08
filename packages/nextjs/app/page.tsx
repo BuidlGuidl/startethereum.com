@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import clsx from "clsx";
 import type { NextPage } from "next";
 import { useAccount, useSignTypedData } from "wagmi";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
@@ -81,8 +82,15 @@ const Home: NextPage = () => {
             <div className="grid items-center justify-between gap-24 lg:gap-0 lg:grid-cols-2">
               <div>
                 <div className="mb-4 flex items-center gap-2">
-                  <h2 className="m-0 text-lg/7 font-semibold text-pink-400 md:text-xl/7">1. Crypto in your pocket</h2>
-                  {(hasWalletInstalled || isUserRegistered) && <CheckCircleIcon className="text-green-500 h-7 w-7" />}
+                  <h2
+                    className={clsx("m-0 text-lg/7 font-semibold md:text-xl/7", {
+                      "text-green-400": hasWalletInstalled || isUserRegistered,
+                      "text-pink-400": !(hasWalletInstalled || isUserRegistered),
+                    })}
+                  >
+                    1. Crypto in your pocket
+                  </h2>
+                  {(hasWalletInstalled || isUserRegistered) && <CheckCircleIcon className="text-green-400 h-7 w-7" />}
                 </div>
                 <p className="mt-2 text-5xl font-raleway font-bold tracking-tight text-white md:text-7xl">
                   Get A Wallet
@@ -155,8 +163,15 @@ const Home: NextPage = () => {
         <div className="relative isolate min-h-screen overflow-hidden my-28 py-24 bg-gray-100 rounded-4xl ring-1 ring-inset ring-black/5 md:my-48 md:py-56">
           <Container>
             <div className="mb-4 flex items-center gap-2">
-              <h2 className="m-0 text-lg/7 font-semibold text-pink-600 md:text-xl/7">2. Sign in anywhere</h2>
-              {(isConnected || isUserRegistered) && <CheckCircleIcon className="text-green-500 h-7 w-7" />}
+              <h2
+                className={clsx("m-0 text-lg/7 font-semibold md:text-xl/7", {
+                  "text-green-600": isConnected || isUserRegistered,
+                  "text-pink-600": !(isConnected || isUserRegistered),
+                })}
+              >
+                2. Sign in anywhere
+              </h2>
+              {(isConnected || isUserRegistered) && <CheckCircleIcon className="text-green-600 h-7 w-7" />}
             </div>
             <p className="mt-2 text-5xl font-raleway font-bold tracking-tight md:text-7xl">Connect Your Wallet</p>
             {!isConnected && (
@@ -181,12 +196,22 @@ const Home: NextPage = () => {
           <Container className="relative">
             <div className="grid items-center justify-between gap-24 lg:gap-0 lg:grid-cols-2">
               <div>
-                <h2 className="text-lg/7 font-semibold text-pink-400 md:text-xl/7">3. Register A Profile</h2>
+                <div className="mb-4 flex items-center gap-2">
+                  <h2
+                    className={clsx("m-0 text-lg/7 font-semibold md:text-xl/7", {
+                      "text-green-400": isUserRegistered,
+                      "text-pink-400": !isUserRegistered,
+                    })}
+                  >
+                    3. Register A Profile
+                  </h2>
+                  {isUserRegistered && <CheckCircleIcon className="text-green-400 h-7 w-7" />}
+                </div>
                 <p className="mt-2 text-5xl font-raleway font-bold tracking-tight text-white md:text-7xl">
                   Sign Your First Message
                 </p>
 
-                {isUserRegistered ? (
+                {!isUserRegistered ? (
                   <>
                     <p className="mt-6 text-pretty text-xl/8 text-gray-100 sm:text-2xl/10">
                       Try out a simple off-chain signature - no gas fees!
