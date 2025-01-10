@@ -6,6 +6,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import type { NextPage } from "next";
 import { useAccount, useSignTypedData } from "wagmi";
+import { XCircleIcon } from "@heroicons/react/24/outline";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import { Container } from "~~/components/Container";
 import { Address, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
@@ -109,7 +110,8 @@ const Home: NextPage = () => {
                     <span className="label-text text-gray-100 text-xl">I already have Rainbow wallet installed</span>
                   </label>
                 </div>
-                <div className="mt-16 flex items-center gap-8 lg:gap-12">
+                {/* Mobile App Links */}
+                <div className="mt-16 flex items-center gap-8 lg:hidden">
                   <div className="p-6 bg-gray-800 ring-1 ring-white/15 rounded-3xl">
                     <Link href="https://apps.apple.com/us/app/rainbow-ethereum-wallet/id1457119021">
                       <Image
@@ -131,6 +133,78 @@ const Home: NextPage = () => {
                         height={80}
                       />
                     </Link>
+                  </div>
+                </div>
+
+                {/* Desktop QR Codes */}
+                <div className="hidden mt-16 items-center gap-8 lg:flex">
+                  <div className="p-6 bg-gray-800 ring-1 ring-white/15 rounded-3xl">
+                    <button
+                      onClick={() => {
+                        const modal = document.getElementById("modal_apple_qr") as HTMLDialogElement;
+                        modal.showModal();
+                      }}
+                    >
+                      <Image
+                        alt="Apple App Store"
+                        src="/logo-apple-apps.svg"
+                        className="w-16 h-16 md:w-20 md:h-20"
+                        width={72}
+                        height={72}
+                      />
+                    </button>
+
+                    <dialog id="modal_apple_qr" className="modal">
+                      <div className="modal-box">
+                        <h3 className="mt-2 mb-0 font-semibold text-xl text-center">Scan and download on Apple</h3>
+                        <Image
+                          alt="QR code for Apple App Store"
+                          src="/qr-apple-app.svg"
+                          className="w-full"
+                          width={80}
+                          height={80}
+                        />
+                        <form method="dialog">
+                          <button className="absolute top-2 right-2 text-primary">
+                            <XCircleIcon className="w-11 h-11" />
+                          </button>
+                        </form>
+                      </div>
+                    </dialog>
+                  </div>
+                  <div className="p-6 bg-gray-800 ring-1 ring-white/15 rounded-3xl">
+                    <button
+                      onClick={() => {
+                        const modal = document.getElementById("modal_android_qr") as HTMLDialogElement;
+                        modal.showModal();
+                      }}
+                    >
+                      <Image
+                        alt="Android App Store"
+                        src="/logo-google-apps.svg"
+                        className="w-16 h-16 md:w-20 md:h-20"
+                        width={80}
+                        height={80}
+                      />
+                    </button>
+
+                    <dialog id="modal_android_qr" className="modal">
+                      <div className="modal-box">
+                        <h3 className="mt-2 mb-0 font-semibold text-xl text-center">Scan and download on Android</h3>
+                        <Image
+                          alt="QR code for Google App Store"
+                          src="/qr-google-app.svg"
+                          className="w-full"
+                          width={80}
+                          height={80}
+                        />
+                        <form method="dialog">
+                          <button className="absolute top-2 right-2 text-primary">
+                            <XCircleIcon className="w-11 h-11" />
+                          </button>
+                        </form>
+                      </div>
+                    </dialog>
                   </div>
                 </div>
               </div>
