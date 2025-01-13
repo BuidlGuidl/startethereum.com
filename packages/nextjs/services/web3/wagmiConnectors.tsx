@@ -10,7 +10,7 @@ const wallets = [rainbowWallet];
 export const wagmiConnectors = connectorsForWallets(
   [
     {
-      groupName: "Recommended Wallets",
+      groupName: "Recommended",
       wallets,
     },
   ],
